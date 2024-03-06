@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Details</title>
+    <style>
+        body {
+            background-image: url('paymentBG.jpeg'); 
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0; 
+            padding: 0; 
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); 
+            margin: 50px auto;
+            padding: 20px;
+            width: 400px;
+        }
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        form {
+            margin-top: 30px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 14px;
+            height: 30px;
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+        }
+        .error {
+            color: red;
+        }
+        .pay {
+            background-color: #28a745;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PAYMENT DETAILS</h1>
+        <form id="paymentForm" method="post" action="process_payment.php">
+            <div class="other">
+                <label for="other">Amount:</label>
+                <input type="text" id="amount" name="amount" required>
+                <span id="amountError" class="error"></span>
+            </div>
+            <div>
+                <label for="phone">Phone.no:</label>
+                <input type="text" id="phone" name="phone" required>
+                <span id="phoneError" class="error"></span>
+            </div>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <span id="nameError" class="error"></span>
+            </div>
+            <div>
+                <button type="button" onclick="initiateRazorpayPayment()" class="pay">PAY</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        function initiateRazorpayPayment() {
+            var amount = document.getElementById('amount').value;
+
+            var options = {
+                key: 'rzp_test_7GWnyymDusrppy', 
+                amount: amount * 100, 
+                currency: 'INR',
+                name: 'Donation',
+                description: 'Payment for Donations',
+                image: 'https://example.com/your_logo.png', 
+                handler: function(response) {
+                   
+                    document.getElementById('paymentForm').submit();
+                },
+                prefill: {
+                    name: document.getElementById('name').value,
+                    email: '', 
+                    contact: document.getElementById('phone').value
+                },
+                notes: {
+                    address: 'Razorpay Payment'
+                },
+                theme: {
+                    color: '#28a745' 
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+    </script>
+</body>
+</html>
